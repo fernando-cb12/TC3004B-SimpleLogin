@@ -1,0 +1,34 @@
+* {
+  font-family: monospace;
+}
+
+button {
+  margin-top: 10px;
+  background-color: #4c74af;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 30vh;
+  padding: 10vh;
+
+  background-color: azure;
+  border: 1px solid lightblue;
+  border-radius: 10px;
+}
+
+label {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
