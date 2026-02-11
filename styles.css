@@ -20,16 +20,8 @@ header {
   background-color: #171717;
   height: 15vh;
 }
-header h1 {
+header img {
   margin-left: 20px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 1) 0%,
-    rgb(165, 1, 1) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 
 .login-container {
