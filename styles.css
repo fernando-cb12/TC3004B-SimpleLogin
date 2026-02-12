@@ -77,9 +77,10 @@ button {
   color: white;
   width: 100%;
 }
-button:hover {
+.login-container button:hover {
   background-color: red;
   color: white;
+  cursor: pointer;
 }
 
 label {
@@ -89,9 +90,57 @@ label {
 }
 
 a {
-  color: white;
+  color: lightgray;
   font-size: small;
 }
 a:hover {
   color: red;
+  cursor: pointer;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 64rem;
+  height: 24rem;
+  margin-top: 6rem;
+
+  background-color: #171717;
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 25px;
+  transition: 0.4s ease-in-out;
+}
+
+.dashboard-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 10px red;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  background-color: #08080c;
+  width: 12rem;
+  padding: 2rem;
+  height: 100%;
+}
+
+li {
+  list-style: none;
+  border-radius: 5px;
+  transition: 0.4s ease-in-out;
+  color: white;
+}
+
+.nav-button {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: white;
+}
+.nav-button:hover {
+  color: red;
+  cursor: pointer;
 }
