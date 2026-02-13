@@ -134,6 +134,16 @@ li {
   color: white;
 }
 
+footer {
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+  width: 100%;
+}
 nav {
   display: flex;
   flex-direction: row;
@@ -148,4 +158,18 @@ nav {
 .nav-button:hover {
   color: red;
   cursor: pointer;
+}
+
+.nav-button.active {
+  color: red;
+  font-weight: bold;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #171717;
+  height: 10vh;
+  width: 100%;
 }
