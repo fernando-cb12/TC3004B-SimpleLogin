@@ -1,0 +1,48 @@
+/* Dashboard Mock Data Styling */
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100%;
+}
+
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.chart-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.kpi-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 10px;
+}
+
+.kpi-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.kpi-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.kpi-change {
+  font-size: 12px;
+  opacity: 0.8;
+}

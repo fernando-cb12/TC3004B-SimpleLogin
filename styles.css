@@ -159,6 +159,7 @@ nav {
   font-size: small;
 }
 
+/* To Do: Modify container background colors */
 .dashboard-container {
   display: flex;
   flex-direction: column;
