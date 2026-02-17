@@ -1,0 +1,41 @@
+.dashboard-container .flex {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.setting-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background-color: #171717;
+  padding: 2rem;
+  width: 50%;
+}
+
+.profile-pic {
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.field:first-child {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+/* To-do:
+    Fix the layout inside the fields
+    maybe remove reused classes and abstract shared elements 
+*/
