@@ -17,26 +17,82 @@
       />
     </header>
     <div class="projects-container">
-      <aside>
-        <div class="field">
-          <h4>Mahindra Management</h4>
-        </div>
+      <aside class="kanban-history">
+        <h3 class="history-title">Board History</h3>
+        <p class="history-subtitle">Your kanban boards</p>
+        <ul class="history-list">
+          <li class="history-item active">
+            <span class="history-icon">📋</span>
+            <span>Mahindra Management</span>
+          </li>
+          <li class="history-item">
+            <span class="history-icon">📋</span>
+            <span>Q1 Sprint Backlog</span>
+          </li>
+          <li class="history-item">
+            <span class="history-icon">📋</span>
+            <span>Bug Tracker</span>
+          </li>
+          <li class="history-item">
+            <span class="history-icon">📋</span>
+            <span>Feature Pipeline</span>
+          </li>
+        </ul>
       </aside>
       <div class="projects-dashboard">
-        <div class="dashboard-titles">
-          <div class="field">
-            <div class="column">
-              <h4>To-do</h4>
+        <h2 class="kanban-board-title">Mahindra Management</h2>
+        <div class="kanban-columns">
+          <div class="kanban-column">
+            <h4 class="column-header">To-do</h4>
+            <div class="kanban-cards">
+              <div class="kanban-card">
+                <span class="card-title">Review documentation</span>
+                <span class="card-meta">High priority</span>
+              </div>
+              <div class="kanban-card">
+                <span class="card-title">Setup dev environment</span>
+                <span class="card-meta">Medium</span>
+              </div>
+              <div class="kanban-card">
+                <span class="card-title">Create API spec</span>
+                <span class="card-meta">Low</span>
+              </div>
             </div>
           </div>
-          <div class="column">
-            <h4>In progress</h4>
+          <div class="kanban-column">
+            <h4 class="column-header">In progress</h4>
+            <div class="kanban-cards">
+              <div class="kanban-card">
+                <span class="card-title">Auth module</span>
+                <span class="card-meta">In review</span>
+              </div>
+              <div class="kanban-card">
+                <span class="card-title">Database schema</span>
+                <span class="card-meta">80% complete</span>
+              </div>
+            </div>
           </div>
-          <div class="column">
-            <h4>QA</h4>
+          <div class="kanban-column">
+            <h4 class="column-header">QA</h4>
+            <div class="kanban-cards">
+              <div class="kanban-card">
+                <span class="card-title">Login flow tests</span>
+                <span class="card-meta">Pending</span>
+              </div>
+            </div>
           </div>
-          <div class="column">
-            <h4>Done</h4>
+          <div class="kanban-column">
+            <h4 class="column-header">Done</h4>
+            <div class="kanban-cards">
+              <div class="kanban-card">
+                <span class="card-title">Project setup</span>
+                <span class="card-meta">Completed</span>
+              </div>
+              <div class="kanban-card">
+                <span class="card-title">Design mockups</span>
+                <span class="card-meta">Completed</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
