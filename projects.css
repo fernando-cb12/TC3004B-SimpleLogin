@@ -4,10 +4,25 @@
   align-items: center;
   justify-content: center;
   gap: 2rem;
+  height: 80%;
+  margin-top: 12rem;
 }
 
 aside {
   height: 100vh;
+}
+
+aside .field {
+  height: 1rem;
+  width: 12rem;
+  font-size: small;
+}
+
+.projects-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
 }
 .dashboard-titles {
   display: flex;
