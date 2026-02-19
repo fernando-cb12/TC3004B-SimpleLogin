@@ -35,17 +35,19 @@
       </div>
       <h4>TechMahindra Management</h4>
       <div class="field">
-        <input type="email" placeholder="Enter your email" class="textfield" />
+        <input type="email" id="login-email" placeholder="Enter your email" class="textfield" />
       </div>
       <div class="field">
         <input
           type="password"
+          id="login-password"
           placeholder="Enter your password"
           class="textfield"
         />
       </div>
-      <button onclick="window.location.href = 'main.html'">Login</button>
+      <button onclick="AuthValidation.handleLogin()">Login</button>
       <a href="register.html" id="register">Register</a>
     </div>
+    <script src="auth-validation.js"></script>
   </body>
 </html>
