@@ -1,4 +1,7 @@
 const AuthValidation = (function () {
+  const STORAGE_KEY = "auth_token";
+  const USER_KEY = "auth_user";
+
   const VALID_CREDENTIALS = {
     email: "user@email.com",
     password: "pass123",
@@ -6,6 +9,68 @@ const AuthValidation = (function () {
 
   const MIN_PASSWORD_LENGTH = 6;
   const MIN_NAME_LENGTH = 2;
+
+  function generateToken() {
+    return (
+      "tk_" + Math.random().toString(36).slice(2) + Date.now().toString(36)
+    );
+  }
+
+  function setToken(email) {
+    const token = generateToken();
+    try {
+      localStorage.setItem(STORAGE_KEY, token);
+      localStorage.setItem(USER_KEY, email);
+      return token;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getToken() {
+    try {
+      return localStorage.getItem(STORAGE_KEY);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function clearToken() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(USER_KEY);
+    } catch (e) {}
+  }
+
+  function isAuthenticated() {
+    const token = getToken();
+    return !!token;
+  }
+
+  function requireAuth() {
+    if (!isAuthenticated()) {
+      window.location.href = "index.html";
+    }
+  }
+
+  function redirectIfAuthenticated() {
+    if (isAuthenticated()) {
+      window.location.href = "main.html";
+    }
+  }
+
+  function logout() {
+    clearToken();
+    window.location.href = "index.html";
+  }
+
+  function getStoredUser() {
+    try {
+      return localStorage.getItem(USER_KEY);
+    } catch (e) {
+      return null;
+    }
+  }
 
   function validateLogin(email, password) {
     if (!email || !password) {
@@ -67,6 +132,7 @@ const AuthValidation = (function () {
       showError(result.message);
       return;
     }
+    setToken(email);
     window.location.href = "main.html";
   }
 
@@ -82,7 +148,8 @@ const AuthValidation = (function () {
       showError(result.message);
       return;
     }
-    window.location.href = "index.html";
+    setToken(email);
+    window.location.href = "main.html";
   }
 
   return {
@@ -90,5 +157,11 @@ const AuthValidation = (function () {
     validateRegister,
     handleLogin,
     handleRegister,
+    isAuthenticated,
+    requireAuth,
+    redirectIfAuthenticated,
+    logout,
+    getToken,
+    getStoredUser,
   };
 })();
