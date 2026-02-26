@@ -126,10 +126,18 @@
       </div>
       <div class="dashboard-content">
         <div class="small-dashboard-container">
-          <div class="kpi-content">
-            <div class="kpi-label">Active Users</div>
-            <div class="kpi-value">2,547</div>
-            <div class="kpi-change">↑ 8.2%</div>
+          <div class="kpi-content" id="pokemon-card">
+            <div class="kpi-label" id="pokemon-name">pokemon</div>
+            <img
+              id="pokemon-image"
+              src=""
+              alt="pokemon"
+              width="80"
+              height="80"
+              style="margin: 8px 0"
+            />
+            <div class="kpi-value" id="pokemon-type">Loading type...</div>
+            <div class="kpi-change" id="pokemon-info">Loading stats...</div>
           </div>
         </div>
         <div class="small-dashboard-container">
@@ -242,6 +250,52 @@
       </div>
     </footer>
     <script src="auth-validation.js"></script>
-    <script>document.addEventListener('DOMContentLoaded', () => AuthValidation.requireAuth());</script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        AuthValidation.requireAuth();
+
+        const nameEl = document.getElementById("pokemon-name");
+        const imgEl = document.getElementById("pokemon-image");
+        const typeEl = document.getElementById("pokemon-type");
+        const infoEl = document.getElementById("pokemon-info");
+
+        if (!nameEl || !imgEl || !typeEl || !infoEl) return;
+
+        fetch("https://pokeapi.co/api/v2/pokemon/charizard")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            const sprite =
+              data.sprites?.other?.["official-artwork"]?.front_default ||
+              data.sprites?.front_default ||
+              "";
+
+            nameEl.textContent = data.name.toUpperCase();
+            if (sprite) {
+              imgEl.src = sprite;
+            }
+            imgEl.alt = data.name;
+
+            const types = (data.types || [])
+              .map((t) => t.type?.name)
+              .filter(Boolean)
+              .join(" / ");
+            typeEl.textContent = types || "Unknown type";
+
+            const baseExp = data.base_experience;
+            const height = data.height;
+            const weight = data.weight;
+            infoEl.textContent = `Base EXP: ${baseExp} | Height: ${height} | Weight: ${weight}`;
+          })
+          .catch((error) => {
+            console.error("Failed to load pokemon data:", error);
+            infoEl.textContent = "Failed to load Pokémon data";
+          });
+      });
+    </script>
   </body>
 </html>
