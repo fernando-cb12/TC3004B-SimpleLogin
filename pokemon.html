@@ -1,0 +1,168 @@
+ <!doctype html>
+ <html lang="en">
+   <head>
+     <meta charset="UTF-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Pokémon Search</title>
+     <link rel="stylesheet" href="styles.css" />
+     <link rel="stylesheet" href="dashboard.css" />
+     <link rel="stylesheet" href="pokemon.css" />
+   </head>
+   <body>
+     <header>
+       <img
+         src="./assets/image.png"
+         alt="TechMahindra Logo"
+         width="150"
+         height="50"
+       />
+     </header>
+     <div class="dashboard-container">
+       <div class="pokemon-search-wrapper">
+         <div class="pokemon-search-header">
+           <h2>Pokémon Directory</h2>
+           <p>Filter by name, ID, or type using live data from PokéAPI.</p>
+         </div>
+
+         <form id="pokemon-search-form" class="pokemon-search-form">
+           <input
+             id="pokemon-query"
+             type="text"
+             class="pokemon-search-input"
+             placeholder="e.g. pikachu, 25, fire"
+             autocomplete="off"
+           />
+           <button
+             type="submit"
+             class="pokemon-search-button"
+           >
+             Filter
+           </button>
+         </form>
+
+         <div id="pokemon-summary" class="pokemon-summary"></div>
+
+         <div id="pokemon-cards" class="pokemon-cards-grid"></div>
+
+         <div id="pokemon-error" class="pokemon-error"></div>
+       </div>
+     </div>
+
+     <footer>
+       <nav>
+         <button
+           class="nav-button"
+           onclick="window.location.href = 'projects.html'"
+         >
+           <svg
+             xmlns="http://www.w3.org/2000/svg"
+             fill="none"
+             width="24"
+             viewBox="0 0 24 24"
+             stroke-width="1.5"
+             stroke="currentColor"
+             class="size-1"
+           >
+             <path
+               stroke-linecap="round"
+               stroke-linejoin="round"
+               d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"
+             />
+           </svg>
+         </button>
+         <button
+           class="nav-button"
+           onclick="window.location.href = 'main.html'"
+         >
+           <svg
+             xmlns="http://www.w3.org/2000/svg"
+             fill="none"
+             width="24"
+             viewBox="0 0 24 24"
+             stroke-width="1.5"
+             stroke="currentColor"
+             class="size-6"
+           >
+             <path
+               stroke-linecap="round"
+               stroke-linejoin="round"
+               d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+             />
+           </svg>
+         </button>
+         <button
+           class="nav-button active"
+           onclick="window.location.href = 'pokemon.html'"
+         >
+           <svg
+             xmlns="http://www.w3.org/2000/svg"
+             fill="none"
+             width="24"
+             viewBox="0 0 24 24"
+             stroke-width="1.5"
+             stroke="currentColor"
+           >
+             <circle
+               cx="12"
+               cy="12"
+               r="9"
+               stroke-linecap="round"
+               stroke-linejoin="round"
+             />
+             <path
+               stroke-linecap="round"
+               stroke-linejoin="round"
+               d="M3 12h6m6 0h6"
+             />
+             <circle
+               cx="12"
+               cy="12"
+               r="2.5"
+               stroke-linecap="round"
+               stroke-linejoin="round"
+             />
+           </svg>
+         </button>
+         <button
+           class="nav-button"
+           onclick="window.location.href = 'settings.html'"
+         >
+           <svg
+             xmlns="http://www.w3.org/2000/svg"
+             fill="none"
+             width="24"
+             viewBox="0 0 24 24"
+             stroke-width="1.5"
+             stroke="currentColor"
+             class="size-6"
+           >
+             <path
+               stroke-linecap="round"
+               stroke-linejoin="round"
+               d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+             />
+           </svg>
+         </button>
+       </nav>
+       <div class="footer">
+         <p>&copy; 2024 TechMahindra. All rights reserved.</p>
+       </div>
+     </footer>
+
+     <script src="auth-validation.js"></script>
+     <script src="pokemon-search.js"></script>
+     <script>
+       document.addEventListener("DOMContentLoaded", () => {
+         AuthValidation.requireAuth();
+         PokemonSearch.init({
+           formId: "pokemon-search-form",
+           inputId: "pokemon-query",
+           cardsId: "pokemon-cards",
+           summaryId: "pokemon-summary",
+           errorId: "pokemon-error",
+         });
+       });
+     </script>
+   </body>
+ </html>
+
