@@ -1,156 +1,13 @@
-const PokemonBattle = (() => {
-  const DEFAULT_MAX_TURNS_PER_POKEMON = 5;
-
-  const extractStats = (pokemon) => {
-    const rawStats = pokemon.stats || {};
-    return {
-      hp: rawStats.hp || 50,
-      attack: rawStats.attack || rawStats["special-attack"] || 50,
-      defense: rawStats.defense || rawStats["special-defense"] || 50,
-      speed: rawStats.speed || 50,
-    };
-  };
-
-  const createCombatant = (pokemon) => {
-    const stats = extractStats(pokemon);
-
-    return {
-      name: pokemon.name,
-      id: pokemon.id,
-      currentHp: stats.hp * 2,
-      maxHp: stats.hp * 2,
-      attack: stats.attack,
-      defense: stats.defense,
-      speed: stats.speed,
-    };
-  };
-
-  const calculateDamage = (attacker, defender) => {
-    const base = attacker.attack - defender.defense / 2;
-    const randomness = Math.random() * 10;
-    const raw = base / 10 + randomness;
-    return Math.max(1, Math.floor(raw));
-  };
-
-  const describeHp = (combatant) => {
-    return `${combatant.currentHp}/${combatant.maxHp} HP`;
-  };
-
-  const simulateBattle = (pokemonA, pokemonB, options = {}) => {
-    const maxTurnsPerPokemon =
-      typeof options.maxTurnsPerPokemon === "number" &&
-      options.maxTurnsPerPokemon > 0
-        ? options.maxTurnsPerPokemon
-        : DEFAULT_MAX_TURNS_PER_POKEMON;
-
-    const log = [];
-
-    const a = createCombatant(pokemonA);
-    const b = createCombatant(pokemonB);
-
-    log.push(
-      `Battle starts between ${a.name.toUpperCase()} and ${b.name.toUpperCase()}!`,
-    );
-    log.push(
-      `${a.name.toUpperCase()}: ${describeHp(a)} | ${b.name.toUpperCase()}: ${describeHp(
-        b,
-      )}`,
-    );
-
-    let turnsA = 0;
-    let turnsB = 0;
-
-    const pickAttackerFirst = () => {
-      if (a.speed > b.speed) return "A";
-      if (b.speed > a.speed) return "B";
-      return Math.random() < 0.5 ? "A" : "B";
-    };
-
-    let next = pickAttackerFirst();
-
-    while (turnsA < maxTurnsPerPokemon || turnsB < maxTurnsPerPokemon) {
-      if (a.currentHp <= 0 || b.currentHp <= 0) break;
-
-      const attacker = next === "A" ? a : b;
-      const defender = next === "A" ? b : a;
-
-      if (next === "A" && turnsA >= maxTurnsPerPokemon) {
-        next = "B";
-        continue;
-      }
-      if (next === "B" && turnsB >= maxTurnsPerPokemon) {
-        next = "A";
-        continue;
-      }
-
-      const damage = calculateDamage(attacker, defender);
-      defender.currentHp = Math.max(0, defender.currentHp - damage);
-
-      if (next === "A") {
-        turnsA += 1;
-      } else {
-        turnsB += 1;
-      }
-
-      log.push(
-        `${attacker.name.toUpperCase()} hits ${defender.name.toUpperCase()} for ${damage} damage! (${describeHp(
-          defender,
-        )})`,
-      );
-
-      if (defender.currentHp <= 0) {
-        log.push(`${defender.name.toUpperCase()} faints!`);
-        break;
-      }
-
-      next = next === "A" ? "B" : "A";
-    }
-
-    let winner = null;
-    if (a.currentHp > 0 && b.currentHp <= 0) {
-      winner = a;
-    } else if (b.currentHp > 0 && a.currentHp <= 0) {
-      winner = b;
-    } else if (a.currentHp > b.currentHp) {
-      winner = a;
-    } else if (b.currentHp > a.currentHp) {
-      winner = b;
-    }
-
-    if (winner) {
-      log.push(
-        `Winner: ${winner.name.toUpperCase()} (${describeHp(
-          winner,
-        )}) after ${turnsA + turnsB} total turns.`,
-      );
-    } else {
-      log.push("The battle ends in a draw.");
-    }
-
-    return {
-      winner,
-      log,
-      turnsA,
-      turnsB,
-      combatants: { a, b },
-    };
-  };
-
-  return {
-    simulateBattle,
-  };
-})();
-
 const PokemonSearch = (() => {
   const API_BASE = "https://pokeapi.co/api/v2/pokemon/";
   //  const OFFSET = 0;
   const MAX_POKEMON = -1;
+  const BATTLE_STORAGE_KEY = "pokemon-battle-selection";
 
   let allPokemon = [];
   let selectedForBattle = [];
   let battleUI = {
     battleButton: null,
-    battleLogEl: null,
     battleSelectionEl: null,
   };
 
@@ -273,7 +130,12 @@ const PokemonSearch = (() => {
   };
 
   const updateBattleSelectionText = () => {
-    const { battleSelectionEl } = battleUI;
+    const { battleSelectionEl, battleButton } = battleUI;
+
+    if (battleButton) {
+      battleButton.classList.add("hidden");
+    }
+
     if (!battleSelectionEl) return;
 
     if (!selectedForBattle.length) {
@@ -286,6 +148,9 @@ const PokemonSearch = (() => {
       battleSelectionEl.textContent = `Selected: ${names[0]}`;
     } else {
       battleSelectionEl.textContent = `Selected: ${names[0]} vs ${names[1]}`;
+      if (battleButton) {
+        battleButton.classList.remove("hidden");
+      }
     }
   };
 
@@ -339,9 +204,6 @@ const PokemonSearch = (() => {
     const battleButton = config.battleButtonId
       ? document.getElementById(config.battleButtonId)
       : null;
-    const battleLogEl = config.battleLogId
-      ? document.getElementById(config.battleLogId)
-      : null;
     const battleSelectionEl = config.battleSelectionId
       ? document.getElementById(config.battleSelectionId)
       : null;
@@ -353,7 +215,6 @@ const PokemonSearch = (() => {
 
     battleUI = {
       battleButton,
-      battleLogEl,
       battleSelectionEl,
     };
 
@@ -363,20 +224,27 @@ const PokemonSearch = (() => {
     };
 
     const handleBattleStart = () => {
-      const { battleLogEl: logEl } = battleUI;
-      if (!logEl) return;
-
       if (selectedForBattle.length !== 2) {
-        logEl.textContent = "Please select exactly 2 Pokémon to battle.";
         return;
       }
 
-      const [p1, p2] = selectedForBattle;
-      const result = PokemonBattle.simulateBattle(p1, p2, {
-        maxTurnsPerPokemon: 5,
-      });
+      const lightweightSelection = selectedForBattle.map((pokemon) => ({
+        id: pokemon.id,
+        name: pokemon.name,
+        sprite: pokemon.sprite,
+        stats: pokemon.stats || {},
+      }));
 
-      logEl.innerHTML = result.log.join("<br>");
+      try {
+        window.localStorage.setItem(
+          BATTLE_STORAGE_KEY,
+          JSON.stringify(lightweightSelection),
+        );
+      } catch (error) {
+        console.error("Failed to store battle selection:", error);
+      }
+
+      window.location.href = "pokemon-battle.html";
     };
 
     const loadAll = async () => {
@@ -393,7 +261,7 @@ const PokemonSearch = (() => {
       }
     };
 
-    if (battleUI.battleButton && battleUI.battleLogEl) {
+    if (battleUI.battleButton) {
       battleUI.battleButton.addEventListener("click", handleBattleStart);
       updateBattleSelectionText();
     }
