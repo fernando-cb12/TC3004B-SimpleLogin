@@ -40,11 +40,25 @@
            </button>
          </form>
 
-         <div id="pokemon-summary" class="pokemon-summary"></div>
+        <div id="pokemon-summary" class="pokemon-summary"></div>
 
-         <div id="pokemon-cards" class="pokemon-cards-grid"></div>
+        <section class="pokemon-battle-panel">
+          <div id="pokemon-battle-selection" class="pokemon-battle-selection">
+            Select up to 2 Pokémon to battle.
+          </div>
+          <button
+            id="pokemon-battle-button"
+            type="button"
+            class="pokemon-battle-button"
+          >
+            Fight!
+          </button>
+          <div id="pokemon-battle-log" class="pokemon-battle-log"></div>
+        </section>
 
-         <div id="pokemon-error" class="pokemon-error"></div>
+        <div id="pokemon-cards" class="pokemon-cards-grid"></div>
+
+        <div id="pokemon-error" class="pokemon-error"></div>
        </div>
      </div>
 
@@ -154,13 +168,16 @@
      <script>
        document.addEventListener("DOMContentLoaded", () => {
          AuthValidation.requireAuth();
-         PokemonSearch.init({
-           formId: "pokemon-search-form",
-           inputId: "pokemon-query",
-           cardsId: "pokemon-cards",
-           summaryId: "pokemon-summary",
-           errorId: "pokemon-error",
-         });
+        PokemonSearch.init({
+          formId: "pokemon-search-form",
+          inputId: "pokemon-query",
+          cardsId: "pokemon-cards",
+          summaryId: "pokemon-summary",
+          errorId: "pokemon-error",
+          battleButtonId: "pokemon-battle-button",
+          battleLogId: "pokemon-battle-log",
+          battleSelectionId: "pokemon-battle-selection",
+        });
        });
      </script>
    </body>
