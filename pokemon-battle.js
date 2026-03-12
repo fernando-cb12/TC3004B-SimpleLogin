@@ -183,6 +183,30 @@ const PokemonBattlePage = (() => {
     `;
   };
 
+  const playLogWithDelay = (logEl, lines, delayMs) => {
+    if (!logEl || !Array.isArray(lines) || !lines.length) return;
+
+    logEl.innerHTML = "";
+
+    let index = 0;
+
+    const step = () => {
+      if (index >= lines.length) return;
+
+      const line = document.createElement("div");
+      line.textContent = lines[index];
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+
+      index += 1;
+      if (index < lines.length) {
+        setTimeout(step, delayMs);
+      }
+    };
+
+    step();
+  };
+
   const init = () => {
     const root = document.getElementById("pokemon-battle-root");
     const errorEl = document.getElementById("pokemon-battle-error");
@@ -211,7 +235,7 @@ const PokemonBattlePage = (() => {
     renderSide(leftEl, result.combatants.a, first);
     renderSide(rightEl, result.combatants.b, second);
 
-    logEl.innerHTML = result.log.join("<br>");
+    playLogWithDelay(logEl, result.log, 600);
 
     clearSelection();
   };
