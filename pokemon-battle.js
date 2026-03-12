@@ -1,5 +1,9 @@
 const PokemonBattle = (() => {
   const DEFAULT_MAX_TURNS_PER_POKEMON = 5;
+  const MIN_TURNS_FOR_SPECIAL_ATTACK = 3;
+  const MIN_TURNS_FOR_SPECIAL_DEFENSE = 2;
+  const MISS_CHANCE_ATTACK = 0.2;
+  const MISS_CHANCE_DEFENSE = 0.2;
 
   const extractStats = (pokemon) => {
     const rawStats = pokemon.stats || {};
@@ -83,8 +87,65 @@ const PokemonBattle = (() => {
         continue;
       }
 
-      const damage = calculateDamage(attacker, defender);
-      defender.currentHp = Math.max(0, defender.currentHp - damage);
+      const attackerTurns = next === "A" ? turnsA : turnsB;
+
+      const possibleActions = ["attack"];
+      if (attackerTurns >= MIN_TURNS_FOR_SPECIAL_ATTACK) {
+        possibleActions.push("specialAttack");
+      }
+      if (attackerTurns >= MIN_TURNS_FOR_SPECIAL_DEFENSE) {
+        possibleActions.push("specialDefense");
+      }
+
+      const chosenAction =
+        possibleActions[Math.floor(Math.random() * possibleActions.length)];
+
+      const rollMiss =
+        Math.random() <
+        (chosenAction === "specialDefense"
+          ? MISS_CHANCE_DEFENSE
+          : MISS_CHANCE_ATTACK);
+
+      if (chosenAction === "specialDefense") {
+        if (rollMiss) {
+          log.push(
+            `${attacker.name.toUpperCase()} intenta DEFENSA ESPECIAL, pero falla.`,
+          );
+        } else {
+          attacker.defense = Math.floor(attacker.defense * 1.3);
+          log.push(
+            `${attacker.name.toUpperCase()} usa DEFENSA ESPECIAL. DEF sube a ${attacker.defense}.`,
+          );
+        }
+      } else {
+        if (rollMiss) {
+          log.push(
+            `${attacker.name.toUpperCase()} falla su ${
+              chosenAction === "specialAttack" ? "ATAQUE ESPECIAL" : "ataque"
+            }.`,
+          );
+        } else {
+          const baseDamage = calculateDamage(attacker, defender);
+          const damage =
+            chosenAction === "specialAttack"
+              ? Math.floor(baseDamage * 1.5)
+              : baseDamage;
+
+          defender.currentHp = Math.max(0, defender.currentHp - damage);
+
+          log.push(
+            `${attacker.name.toUpperCase()} ${
+              chosenAction === "specialAttack" ? "usa ATAQUE ESPECIAL y" : "golpea y"
+            } hace ${damage} de daño a ${defender.name.toUpperCase()} (${describeHp(
+              defender,
+            )}).`,
+          );
+
+          if (defender.currentHp <= 0) {
+            log.push(`${defender.name.toUpperCase()} se debilita.`);
+          }
+        }
+      }
 
       if (next === "A") {
         turnsA += 1;
@@ -92,14 +153,7 @@ const PokemonBattle = (() => {
         turnsB += 1;
       }
 
-      log.push(
-        `${attacker.name.toUpperCase()} hits ${defender.name.toUpperCase()} for ${damage} damage! (${describeHp(
-          defender,
-        )})`,
-      );
-
       if (defender.currentHp <= 0) {
-        log.push(`${defender.name.toUpperCase()} faints!`);
         break;
       }
 
@@ -107,28 +161,34 @@ const PokemonBattle = (() => {
     }
 
     let winner = null;
+    let winnerSide = null;
     if (a.currentHp > 0 && b.currentHp <= 0) {
       winner = a;
+      winnerSide = "A";
     } else if (b.currentHp > 0 && a.currentHp <= 0) {
       winner = b;
+      winnerSide = "B";
     } else if (a.currentHp > b.currentHp) {
       winner = a;
+      winnerSide = "A";
     } else if (b.currentHp > a.currentHp) {
       winner = b;
+      winnerSide = "B";
     }
 
     if (winner) {
       log.push(
-        `Winner: ${winner.name.toUpperCase()} (${describeHp(
+        `GANADOR: ${winner.name.toUpperCase()} (${describeHp(
           winner,
-        )}) after ${turnsA + turnsB} total turns.`,
+        )}) después de ${turnsA + turnsB} turnos en total.`,
       );
     } else {
-      log.push("The battle ends in a draw.");
+      log.push("La batalla termina en empate.");
     }
 
     return {
       winner,
+      winnerSide,
       log,
       turnsA,
       turnsB,
@@ -213,8 +273,9 @@ const PokemonBattlePage = (() => {
     const leftEl = document.getElementById("pokemon-battle-left");
     const rightEl = document.getElementById("pokemon-battle-right");
     const logEl = document.getElementById("pokemon-battle-log");
+    const winnerEl = document.getElementById("pokemon-battle-winner");
 
-    if (!root || !errorEl || !leftEl || !rightEl || !logEl) {
+    if (!root || !errorEl || !leftEl || !rightEl || !logEl || !winnerEl) {
       console.warn("PokemonBattlePage: Missing required DOM elements.");
       return;
     }
@@ -236,6 +297,24 @@ const PokemonBattlePage = (() => {
     renderSide(rightEl, result.combatants.b, second);
 
     playLogWithDelay(logEl, result.log, 600);
+
+    if (result.winner && result.winnerSide) {
+      const original =
+        result.winnerSide === "A" ? first : result.winnerSide === "B" ? second : null;
+      if (original) {
+        const sprite = original.sprite || "";
+        const name = result.winner.name.toUpperCase();
+        winnerEl.innerHTML = `
+          <div class="pokemon-battle-winner-label">GANADOR</div>
+          <img
+            src="${sprite}"
+            alt="${name}"
+            class="pokemon-battle-winner-sprite"
+          />
+          <div class="pokemon-battle-winner-name">${name}</div>
+        `;
+      }
+    }
 
     clearSelection();
   };
